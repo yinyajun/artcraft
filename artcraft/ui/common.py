@@ -2,6 +2,7 @@ import gradio as gr
 
 from ..hub import list_model, Type
 from ..networks import scheduler_list
+from ..processors import load_processors
 
 
 def prompt_ui(column_layout=False):
@@ -174,9 +175,8 @@ def _controlnet_ui(i, nets, images, scales):
             control_img = gr.Image(label="control image", type="pil")
 
         def process(img, method):
-            import importlib
-            c = importlib.import_module("process.tasks" + "." + method)
-            process_fn = getattr(c, "process")
+            p = load_processors("artcraft.processors")
+            process_fn = p[method]["process"]
             return process_fn(img)
 
         process_btn.click(process, [input_img, processor], [control_img])
