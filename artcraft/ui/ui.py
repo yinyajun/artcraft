@@ -5,7 +5,7 @@ from .process import process_ui
 from .hub import model_manager_ui
 
 
-def ui():
+def ui(proxy=None):
     css = """.gr-small-button {
     max-width: 1.5em !important;
     min-width: 1.5em !important;
@@ -21,7 +21,7 @@ def ui():
             with gr.TabItem("process", id=3):
                 tab3_input, tab3_output, tab3_ops = process_ui("artcraft.processors", ["image2image", "process"])
             with gr.TabItem("models", id=4):
-                model_manager_ui()
+                model_manager_ui(proxy=proxy)
 
         tab1_ops[0].click(lambda x: (gr.update(value=x), gr.Tabs.update(selected=2)), [tab1_output], [tab2_input, tabs])
         tab1_ops[1].click(lambda x: (gr.update(value=x), gr.Tabs.update(selected=3)), [tab1_output], [tab3_input, tabs])

@@ -37,7 +37,7 @@ def registered_models_ui():
     return tables
 
 
-def model_manager_ui():
+def model_manager_ui(proxy):
     with gr.Row(variant="compact"):
         with gr.Column():
             name, type, source, model_id, revision, sub_path, weight_file, trained_word = model_ui()
@@ -56,7 +56,7 @@ def model_manager_ui():
         if not revision:
             revision = None
 
-        path = snapshot_download(source, type, model_id, sub_path, weight_file, revision)
+        path = snapshot_download(source, type, model_id, sub_path, weight_file, revision, proxy=proxy)
         register_model(name, type, source, model_id, revision, sub_path, weight_file, trained_word)
 
         return path

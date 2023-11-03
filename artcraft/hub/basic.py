@@ -36,8 +36,8 @@ class ModelMeta:
     trained_word: str = None
 
 
-def download_file(url: str, target_file: str):
-    response = requests.get(url, stream=True)
+def download_file(url: str, target_file: str, proxy=None):
+    response = requests.get(url, stream=True, proxies=proxy)
     total_size_in_bytes = int(response.headers.get('content-length', 0))
     progress_bar = tqdm(total=total_size_in_bytes, unit_scale=True, unit_divisor=1024)
     try:
@@ -120,5 +120,3 @@ def add_model_info(model_dir: str, meta: ModelMeta):
         info = dataclasses.asdict(meta)
         json.dump(info, f)
     return info
-
-
