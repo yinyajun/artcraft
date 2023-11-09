@@ -4,8 +4,8 @@ from ..networks import set_vae, set_lora, set_textual_inversion, set_clip_skip, 
 
 class Adapter:
     def __init__(self,
-                 ip_model_path: str,
-                 image_encoder_path: str,
+                 adapt_model: str,
+                 adapt_image_encoder: str,
                  base_model_path: str,
                  vae: str = None,
                  clip_skip: int = 0,
@@ -32,8 +32,8 @@ class Adapter:
         self.pipe = pipe
 
         from ip_adapter.ip_adapter import IPAdapterPlus
-        self.ip_model = IPAdapterPlus(pipe, image_encoder_path=image_encoder_path,
-                                      ip_ckpt=ip_model_path, device="cuda", num_tokens=16)
+        self.ip_model = IPAdapterPlus(pipe, image_encoder_path=adapt_image_encoder,
+                                      ip_ckpt=adapt_model, device="cuda", num_tokens=16)
 
     def run(self,
             reference_image,
@@ -44,7 +44,7 @@ class Adapter:
             sampling_steps=30,
             num_images=2,
             seed=-1,
-            scale=0.5,
+            adapt_scale=0.5,
             **kwargs):
         set_scheduler(self.pipe, scheduler)
 
