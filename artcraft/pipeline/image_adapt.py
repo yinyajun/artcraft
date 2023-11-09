@@ -56,4 +56,4 @@ class Adapter:
             seed=seed,
             num_inference_steps=sampling_steps,
             num_samples=num_images,
-            scale=scale)
+            scale=adapt_scale)
