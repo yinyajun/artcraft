@@ -131,10 +131,11 @@ def list_model(type: str, cache_dir=None, simplify=False):
     with open(config, "r") as f:
         data = json.load(f)
     models = data.get(type, {})
+
     if simplify:
         res = list(models.keys())
     else:
-        res = [list(m.values()) for m in models.values()]
+        res = [m for m in models.values()]
     return res
 
 

@@ -14,7 +14,7 @@ class Adapter:
                  **kwargs):
         dtype = torch.float16
 
-        from sd import MyselfStableDiffusionPipeline
+        from .sd import MyselfStableDiffusionPipeline
         pipe = MyselfStableDiffusionPipeline.from_pretrained(
             base_model_path,
             torch_dtype=dtype,
@@ -31,7 +31,7 @@ class Adapter:
         pipe.to("cuda")
         self.pipe = pipe
 
-        from ip_adapter.ip_adapter import IPAdapterPlus
+        from .ip_adapter.ip_adapter import IPAdapterPlus
         self.ip_model = IPAdapterPlus(pipe, image_encoder_path=adapt_image_encoder,
                                       ip_ckpt=adapt_model, device="cuda", num_tokens=16)
 

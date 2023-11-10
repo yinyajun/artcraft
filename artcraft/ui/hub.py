@@ -18,10 +18,10 @@ def model_ui():
     return name, type, source, model_id, revision, sub_path, weight_file, trained_word
 
 
-def registered_models_ui():
+def registered_models_ui(headers):
     def models_table(value):
         table = gr.DataFrame(
-            headers=["name", "type", "source", "model id", "revision", "sub_path", "weight_file", "trained_word"],
+            headers=headers,
             datatype=["str", "str", "str", "str", "str", "str", "str", "str"],
             label="registered models",
             interactive=False)
@@ -33,11 +33,13 @@ def registered_models_ui():
         tables = {}
         for k in list(Type.__members__):
             with gr.TabItem(k):
-                tables[k] = models_table(list_model(k))
+                tables[k] = models_table([[m[t] for t in headers] for m in list_model(k)])
     return tables
 
 
 def model_manager_ui(proxy):
+    headers = ["name", "type", "source", "model_id", "revision", "sub_path", "weight_file", "trained_word"]
+
     with gr.Row(variant="compact"):
         with gr.Column():
             name, type, source, model_id, revision, sub_path, weight_file, trained_word = model_ui()
@@ -46,7 +48,7 @@ def model_manager_ui(proxy):
                 refresh_btn = gr.Button("refresh")
                 add_btn = gr.Button("add", variant="primary")
     info = gr.Text(label="model info")
-    tables = registered_models_ui()
+    tables = registered_models_ui(headers)
 
     def fill(evt: gr.SelectData, table):
         row, _ = evt.index
@@ -68,7 +70,7 @@ def model_manager_ui(proxy):
     def refresh_models():
         res = []
         for k, table in tables.items():
-            new_list = list_model(k)
+            new_list = [[m[t] for t in headers] for m in list_model(k)]
             if len(new_list) == 0:
                 res.append([["", "", "", "", "", "", "", ""]])
             else:
