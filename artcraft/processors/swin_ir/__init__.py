@@ -25,8 +25,9 @@ def process(img, scale: float):
     if not img:
         return None
 
-    from .helper import SwinIRHelper
     model_path = require()
+
+    from .helper import SwinIRHelper
     helper = SwinIRHelper(model_path)
 
     out = helper.enhance(np.array(img))

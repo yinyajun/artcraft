@@ -28,8 +28,9 @@ def process(img, scale: float = 2, bg_upsample_fn: str = "None"):
     if not img:
         return None
 
-    from .helper import GFPGANHelper
     model_path = require()
+
+    from .helper import GFPGANHelper
     helper = GFPGANHelper(model_path, upscale=int(np.ceil(scale)))
 
     bg_upscaler = None
