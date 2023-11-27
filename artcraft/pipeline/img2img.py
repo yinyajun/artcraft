@@ -41,8 +41,8 @@ class Image2Image:
                 feature_extractor=None,
                 requires_safety_checker=False)
         else:
-            from diffusers import StableDiffusionImg2ImgPipeline
-            pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+            from .sd_img2img import MyselfStablerDiffusionImg2ImgPipeline
+            pipe = MyselfStablerDiffusionImg2ImgPipeline.from_pretrained(
                 base_model_path,
                 torch_dtype=dtype,
                 local_files_only=True,
@@ -58,6 +58,29 @@ class Image2Image:
         pipe.to("cuda")
 
         self.pipe = pipe
+
+    def from_loaded(self, loaded):
+        self.pipe = loaded.pipe
+
+        from .lpw import MyselfLPWStableDiffusionPipeline
+        from .sd import MyselfStableDiffusionPipeline
+
+        if isinstance(loaded, MyselfLPWStableDiffusionPipeline):
+            return
+        elif isinstance(loaded, MyselfStableDiffusionPipeline):
+            from .sd_img2img import MyselfStablerDiffusionImg2ImgPipeline
+            self.pipe = MyselfStablerDiffusionImg2ImgPipeline(
+                vae=self.pipe.vae,
+                text_encoder=self.pipe.text_encoder,
+                tokenizer=self.pipe.tokenizer,
+                unet=self.pipe.unet,
+                scheduler=self.pipe.scheduler,
+                safety_checker=None,
+                feature_extractor=None,
+                requires_safety_checker=False)
+        else:
+            raise ValueError("not supported pipeline copy")
+
 
     def run(self,
             image,

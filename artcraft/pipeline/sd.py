@@ -247,3 +247,4 @@ class MyselfStableDiffusionPipeline(StableDiffusionPipeline):
         if accepts_generator:
             extra_step_kwargs["generator"] = generator
         return extra_step_kwargs
+

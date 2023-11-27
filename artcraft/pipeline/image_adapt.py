@@ -40,6 +40,8 @@ class Adapter:
             prompt,
             neg_prompt="",
             guidance_scale=7.5,
+            width=512,
+            height=512,
             scheduler=None,
             sampling_steps=30,
             num_images=2,
@@ -54,6 +56,7 @@ class Adapter:
             negative_prompt=neg_prompt,
             guidance_scale=guidance_scale,
             seed=seed,
+            width=width, height=height,
             num_inference_steps=sampling_steps,
             num_samples=num_images,
             scale=adapt_scale)
