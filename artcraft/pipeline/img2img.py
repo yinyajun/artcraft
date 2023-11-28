@@ -6,15 +6,19 @@ from ..networks import set_vae, set_lora, set_textual_inversion, set_clip_skip, 
 
 
 class Image2Image:
-    def __init__(self,
-                 base_model_path: str,
-                 vae: str = None,
-                 clip_skip: int = 0,
-                 enable_lpw: bool = False,
-                 lora_specs: list[tuple[str, str | float]] = (),
-                 embedding_specs: list[tuple[str, str | float]] = (),
-                 control_net_paths: list[str] = (),
-                 **kwargs):
+    def __init__(self, pipeline=None):
+        self.pipe = pipeline
+
+    @classmethod
+    def from_config(cls,
+                    base_model_path: str,
+                    vae: str = None,
+                    clip_skip: int = 0,
+                    enable_lpw: bool = False,
+                    lora_specs: list[tuple[str, str | float]] = (),
+                    embedding_specs: list[tuple[str, str | float]] = (),
+                    control_net_paths: list[str] = (),
+                    **kwargs):
         # todo: support cpu
         dtype = torch.float16
 
@@ -57,30 +61,29 @@ class Image2Image:
 
         pipe.to("cuda")
 
-        self.pipe = pipe
+        return cls(pipeline=pipe)
 
-    def from_loaded(self, loaded):
-        self.pipe = loaded.pipe
-
+    @classmethod
+    def from_loaded(cls, loaded):
         from .lpw import MyselfLPWStableDiffusionPipeline
         from .sd import MyselfStableDiffusionPipeline
 
-        if isinstance(loaded, MyselfLPWStableDiffusionPipeline):
-            return
-        elif isinstance(loaded, MyselfStableDiffusionPipeline):
+        if isinstance(loaded.pipe, MyselfLPWStableDiffusionPipeline):
+            pipe = loaded.pipe
+        elif isinstance(loaded.pipe, MyselfStableDiffusionPipeline):
             from .sd_img2img import MyselfStablerDiffusionImg2ImgPipeline
-            self.pipe = MyselfStablerDiffusionImg2ImgPipeline(
-                vae=self.pipe.vae,
-                text_encoder=self.pipe.text_encoder,
-                tokenizer=self.pipe.tokenizer,
-                unet=self.pipe.unet,
-                scheduler=self.pipe.scheduler,
+            pipe = MyselfStablerDiffusionImg2ImgPipeline(
+                vae=loaded.pipe.vae,
+                text_encoder=loaded.pipe.text_encoder,
+                tokenizer=loaded.pipe.tokenizer,
+                unet=loaded.pipe.unet,
+                scheduler=loaded.pipe.scheduler,
                 safety_checker=None,
                 feature_extractor=None,
                 requires_safety_checker=False)
         else:
             raise ValueError("not supported pipeline copy")
-
+        return cls(pipeline=pipe)
 
     def run(self,
             image,
@@ -157,13 +160,13 @@ def image2image(base_model: str,
     control_images = [Image.open(i["name"]) for i in control_images]
     control_scales = [i[0] for i in control_condition_scales]
 
-    p = Image2Image(base_model_path=base_model_path,
-                    vae=vae,
-                    clip_skip=clip_skip,
-                    enable_lpw=enable_lpw,
-                    lora_specs=lora_specs,
-                    embedding_specs=embedding_specs,
-                    control_net_paths=control_net_paths)
+    p = Image2Image.from_config(base_model_path=base_model_path,
+                                vae=vae,
+                                clip_skip=clip_skip,
+                                enable_lpw=enable_lpw,
+                                lora_specs=lora_specs,
+                                embedding_specs=embedding_specs,
+                                control_net_paths=control_net_paths)
 
     return p.run(image,
                  prompt,
