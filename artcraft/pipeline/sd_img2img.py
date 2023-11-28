@@ -137,12 +137,12 @@ class MyselfStablerDiffusionImg2ImgPipeline(StableDiffusionImg2ImgPipeline):
         latent_timestep = timesteps[:1].repeat(batch_size * num_images_per_prompt)
 
         # 6. Prepare latent variables
-        latents = self.prepare_latents(
+        latents = self.prepare_latents2(scheduler,
             image, latent_timestep, batch_size, num_images_per_prompt, prompt_embeds.dtype, device, generator
         )
 
         # 7. Prepare extra step kwargs. TODO: Logic should ideally just be moved out of the pipeline
-        extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
+        extra_step_kwargs = self.prepare_extra_step_kwargs2(scheduler, generator, eta)
 
         # 8. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * scheduler.order
