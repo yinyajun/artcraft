@@ -36,7 +36,7 @@ setup(
         'modelscope==1.8.3',
         'Pillow==10.0.0',
         'opencv-python==4.8.0.76',
-        'diffusers==0.23.1',
+        'diffusers==0.20.0',
         'accelerate==0.21.0',
         'torch==2.0.1',
         'transformers==4.31.0'
