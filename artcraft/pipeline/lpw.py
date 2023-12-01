@@ -1646,6 +1646,7 @@ class MyselfLPWStableDiffusionPipeline(StableDiffusionLongPromptWeightingPipelin
 
         # 6. Prepare latent variables
         latents, init_latents_orig, noise = self.prepare_latents2(
+            scheduler,
             image,
             latent_timestep,
             num_images_per_prompt,
