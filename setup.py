@@ -32,14 +32,15 @@ setup(
     url='https://github.com/yinyajun/artcraft',
     install_requires=[
         'gradio==3.41.2',
-        'huggingface_hub==0.16.4',
+        'huggingface_hub==0.19.4',
         'modelscope==1.8.3',
         'Pillow==10.0.0',
         'opencv-python==4.8.0.76',
-        'diffusers==0.20.0',
+        'diffusers==0.24.0',
         'accelerate==0.21.0',
         'torch==2.0.1',
-        'transformers==4.31.0'
+        'transformers==4.34.0',
+        'peft==0.6.2'
     ],
     python_requires='>=3.9'
 )
