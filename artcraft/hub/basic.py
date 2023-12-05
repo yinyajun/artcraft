@@ -76,10 +76,12 @@ def download_thumbnail(thumbnail: str, target_dir: str):
 
 
 def download_convert_script(tmp_dir: str):
-    file = "convert_original_stable_diffusion_to_diffusers.py"
+    import diffusers
+    version = f"v{diffusers.__version__}"
+    file = f"convert_original_stable_diffusion_to_diffusers_{version.replace('.', '_')}"
     script_file = os.path.join(tmp_dir, file)
     if not os.path.exists(script_file):
-        cmd = f"cd {tmp_dir} && curl -JL --remote-name  https://raw.githubusercontent.com/huggingface/diffusers/v0.20.0/scripts/convert_original_stable_diffusion_to_diffusers.py"
+        cmd = f"cd {tmp_dir} && curl -JL --remote-name  https://raw.githubusercontent.com/huggingface/diffusers/{version}/scripts/convert_original_stable_diffusion_to_diffusers.py && mv convert_original_stable_diffusion_to_diffusers.py convert_original_stable_diffusion_to_diffusers_{version.replace('.', '_')}"
         os.system(cmd)
     if not os.path.exists(script_file):
         raise FileNotFoundError(f"{script_file} download fails")
